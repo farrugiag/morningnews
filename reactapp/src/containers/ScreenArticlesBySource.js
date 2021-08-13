@@ -81,7 +81,12 @@ function ScreenArticlesBySource(props) {
 const mapDispatchToProps = function(dispatch){
   console.log("dispatch",dispatch)
   return {
-    addToWishList : function(title, description, content, image){
+    addToWishList : async function(title, description, content, image){
+      const envoiBackend = await fetch('/add-article',{
+        method : 'POST',
+        headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+        body : `title=${title}&description=${description}&image=${image}&content=${content}`
+      })
       console.log("click", title, description, content)
       dispatch({type : 'addArticle', title : title, description : description, content : content, image : image})
     }
