@@ -73,8 +73,8 @@ router.post('/add-article', async function(req, res, next) {
 })
 
 router.post('/delete-article', async function (req, res, next) {
-  const id= req.body.id
-  const articleDelete= await ArticleModel.deleteOne({_id: id})
+  const idArticle= req.body.id
+  const articleDelete= await ArticleModel.deleteOne({_id: idArticle})
   res.json({result: true})
 })
 
