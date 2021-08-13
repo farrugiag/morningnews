@@ -87,8 +87,10 @@ const mapDispatchToProps = function(dispatch){
         headers : {'Content-Type': 'application/x-www-form-urlencoded'},
         body : `title=${title}&description=${description}&image=${image}&content=${content}`
       })
-      console.log("click", title, description, content)
-      dispatch({type : 'addArticle', title : title, description : description, content : content, image : image})
+      const reponseBackend = await envoiBackend.json()
+      const idBackendArticle = reponseBackend.articleSaved._id
+      console.log("click", title, description, content, idBackendArticle)
+      dispatch({type : 'addArticle', title : title, description : description, content : content, image : image, _id : idBackendArticle})
     }
   }
 }
