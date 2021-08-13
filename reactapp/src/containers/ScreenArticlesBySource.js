@@ -16,6 +16,8 @@ function ScreenArticlesBySource(props) {
 
   console.log("ARTCLE LIST",articleList)
 
+  console.log("PROOOOOOPS", props)
+
   useEffect(()=>{
     async function loadData() {
       const url = `https://newsapi.org/v2/top-headlines?sources=${id}&apiKey=8779b06fef76451fb6499e5005138d69`
@@ -62,7 +64,7 @@ function ScreenArticlesBySource(props) {
                   }
                   actions={[
                       <Icon type="read" key="ellipsis2"/>,
-                      <Icon type="like" key="ellipsis" onClick = {() => props.addToWishList(article.title,article.description, article.content, article.urlToImage)}/>
+                      <Icon type="like" key="ellipsis" onClick = {() => props.addToWishList(article.title,article.description, article.content, article.urlToImage, props.token)}/>
                   ]}
                   >
                   <Meta
@@ -81,15 +83,16 @@ function ScreenArticlesBySource(props) {
 const mapDispatchToProps = function(dispatch){
   console.log("dispatch",dispatch)
   return {
-    addToWishList : async function(title, description, content, image){
+    addToWishList : async function(title, description, content, image, token){
       const envoiBackend = await fetch('/add-article',{
         method : 'POST',
         headers : {'Content-Type': 'application/x-www-form-urlencoded'},
-        body : `title=${title}&description=${description}&image=${image}&content=${content}`
+        body : `title=${title}&description=${description}&image=${image}&content=${content}&token=${token}`
       })
       const reponseBackend = await envoiBackend.json()
-      const idBackendArticle = reponseBackend.articleSaved._id
-      console.log("click", title, description, content, idBackendArticle)
+      console.log("responseBackend", reponseBackend)
+      const idBackendArticle = await reponseBackend.idArticleSaved
+      console.log("click addToWishList", title, description, content, idBackendArticle)
       dispatch({type : 'addArticle', title : title, description : description, content : content, image : image, idArticle : idBackendArticle})
     }
   }
