@@ -56,12 +56,14 @@ router.post('/add-article', async function(req, res, next) {
   const image = req.body.image
   const description = req.body.description
   const content = req.body.content
+  const token = req.body.token
   console.log("req.body add-article", req.body)
   const articleFind= await ArticleModel.findOne({title:title})
   console.log("articleFind", articleFind)
-  if (articleFind){
-    res.json({result: !!articleFind})
-  }
+  // if (articleFind){
+  //   res.json({result: !!articleFind, message : "ici"})
+    
+  // }
   const newArticle = new ArticleModel( {
     title : title,
     image: image,
@@ -69,7 +71,14 @@ router.post('/add-article', async function(req, res, next) {
     content: content
   })
   const articleSaved = await newArticle.save()
-  res.json({result : true, articleSaved})
+  console.log("article saved", articleSaved)
+  console.log("article saved id ", articleSaved._id)
+  const user = await UserModel.findOne({token : token})
+  console.log("user", user)
+  // user.userArticles.push(articleSaved._id)
+  const userUpdated = await UserModel.updateOne({_id : user._id}, {userArticles : [...user.userArticles, articleSaved._id]})
+  console.log("userUpdated", userUpdated)
+  res.json({result : true, idArticleSaved : articleSaved._id})
 })
 
 router.post('/delete-article', async function (req, res, next) {
