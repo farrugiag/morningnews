@@ -22,7 +22,7 @@ function ScreenHome(props) {
       body : `username=${username}&email=${email}&password=${password}`
     })
     const response = await rawResponse.json()
-    if (!response.result){
+    if (!response.login){
       console.log('RESPONSE', response)
       props.setToken(response.user.token)
       setRedirectSignup(true)
