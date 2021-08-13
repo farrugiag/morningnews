@@ -12,19 +12,38 @@ function ScreenMyArticles(props) {
 
   console.log("PROOOOOOOOPS", props)
 
+  console.log("props.articleWishList", props.articleWishList)
+
   const [isEmpty,setIsEmpty] = useState(true)
 
+  console.log("isEmpty", isEmpty)
+
   useEffect(()=>{
-    function articleListEmpty(){
-      if (props.articleWishList.length){
-        setIsEmpty(false)
+    async function initialisationArticleWishlist(token){
+      const reponseStart = await fetch('/begin-user-wish-list',{
+        method : 'POST',
+        headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+        body : `token=${token}`
+      })
+      const wishListReponse = await reponseStart.json()
+      if (wishListReponse.resultat === "token existe"){
+          console.log("reponse start", wishListReponse)
+          props.sendUserWishListToReducer(wishListReponse.userWishList)
+          // setIsEmpty(false)
       }
-    }
-    articleListEmpty()
+    } 
+    initialisationArticleWishlist(props.token)
+    // function articleListEmpty(){
+    //   if (props.articleWishList.length){
+    //     setIsEmpty(false)
+    //   }
+    // }
+    // articleListEmpty()
+    
   }, 
   [])
 
-  if(isEmpty){
+  if(!props.articleWishList.length){
     return (
       <div>
         <Nav/>
@@ -67,7 +86,7 @@ function ScreenMyArticles(props) {
                 }            
                 actions={[
                   <Icon type="read" key="ellipsis2" />,
-                    <Icon type="delete" key="ellipsis" onClick = {() => props.removeFromWishList(article.title, article.idArticle)} />
+                    <Icon type="delete" key="ellipsis" onClick = {() => props.removeFromWishList(article.title, article._id)} />
                 ]}
                 >                       
                 <Meta
@@ -99,7 +118,10 @@ const mapDispatchToProps = function(dispatch){
       })
       console.log("click remove", title)
       dispatch({type : "removeArticle", title: title})
-      }
+    },
+    sendUserWishListToReducer : function(wishList){
+      dispatch({type : 'startUserWishList', wishList : wishList})
+    }
     }
   }
 

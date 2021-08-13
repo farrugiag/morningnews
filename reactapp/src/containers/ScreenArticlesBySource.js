@@ -92,8 +92,9 @@ const mapDispatchToProps = function(dispatch){
       const reponseBackend = await envoiBackend.json()
       console.log("responseBackend", reponseBackend)
       const idBackendArticle = await reponseBackend.idArticleSaved
+      const userWishList = await reponseBackend.userWishList
       console.log("click addToWishList", title, description, content, idBackendArticle)
-      dispatch({type : 'addArticle', title : title, description : description, content : content, image : image, idArticle : idBackendArticle})
+      dispatch({type : 'addArticle', title : title, description : description, content : content, image : image, idArticle : idBackendArticle, userWishList : userWishList, token : token})
     }
   }
 }

@@ -40,13 +40,15 @@ router.post('/sign-in', async function(req, res, next){
   console.log("req.body",req.body)
   const userFind = await UserModel.findOne({email : email}) 
   console.log("signin", userFind)
-  if (bcrypt.compareSync(password, userFind.password)){
-    console.log("trueeeee")
-    res.json({
-      login : true, 
-      user : {username : userFind.username, token : userFind.token}
-    })
-    return
+  if(userFind){
+    if (bcrypt.compareSync(password, userFind.password)){
+      console.log("trueeeee")
+      res.json({
+        login : true, 
+        user : {username : userFind.username, token : userFind.token}
+      })
+      return
+    } 
   }
   res.json({login : false})
 })
@@ -71,18 +73,28 @@ router.post('/add-article', async function(req, res, next) {
     content: content
   })
   const articleSaved = await newArticle.save()
-  console.log("article saved", articleSaved)
-  console.log("article saved id ", articleSaved._id)
   const user = await UserModel.findOne({token : token})
-  console.log("user", user)
   // user.userArticles.push(articleSaved._id)
   const userUpdated = await UserModel.updateOne({_id : user._id}, {userArticles : [...user.userArticles, articleSaved._id]})
-  console.log("userUpdated", userUpdated)
-  res.json({result : true, idArticleSaved : articleSaved._id})
+  const userWishListUpdated = await UserModel.findById(user._id)
+  var userPopulate= await UserModel.findById(user._id).populate('userArticles')
+  res.json({result : true, idArticleSaved : articleSaved._id, userWishList : userPopulate.userArticles})
+})
+
+router.post('/begin-user-wish-list', async function (req, res, next) {
+  console.log("fonction lancée begin ", req.body)
+  const token = req.body.token
+  const user = await UserModel.findOne({token : token}).populate('userArticles')
+  console.log("user", user)
+  if (user){
+    res.json({resultat : "token existe" ,userWishList : user.userArticles})
+  return
+  }
+  res.json({resultat : "token n'existe pas"})
+
 })
 
 router.post('/delete-article', async function (req, res, next) {
-  console.log("fonction lancée", req.body)
   const idArticle = req.body.id
   const articleDelete= await ArticleModel.deleteOne({ _id : idArticle })
   res.json({result: true})
