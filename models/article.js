@@ -8,6 +8,6 @@ var articleSchema = mongoose.Schema({
     content : String
  });
 
- var ArticleModel = mongoose.model('articles', userSchema);
+ var ArticleModel = mongoose.model('articles', articleSchema);
 
  module.exports = ArticleModel

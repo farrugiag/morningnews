@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const UserModel = require ("../models/user")
+const ArticleModel = require("../models/article")
 
 const bcrypt = require('bcrypt')
 const uid2 = require('uid2')
@@ -48,6 +49,27 @@ router.post('/sign-in', async function(req, res, next){
     return
   }
   res.json({login : false})
+})
+
+router.post('/add-article', async function(req, res, next) {
+  const title = req.body.title
+  const image = req.body.image
+  const description = req.body.description
+  const content = req.body.content
+  console.log("req.body add-article", req.body)
+  const articleFind= await ArticleModel.findOne({title:title})
+  console.log("articleFind", articleFind)
+  if (articleFind){
+    res.json({result: !!articleFind})
+  }
+  const newArticle = new ArticleModel( {
+    title : title,
+    image: image,
+    description: description,
+    content: content
+  })
+  const articleSaved = await newArticle.save()
+  res.json({result : true, articleSaved})
 })
 
 module.exports = router;
