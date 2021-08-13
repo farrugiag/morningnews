@@ -67,7 +67,7 @@ function ScreenMyArticles(props) {
                 }            
                 actions={[
                   <Icon type="read" key="ellipsis2" />,
-                    <Icon type="delete" key="ellipsis" onClick = {() => props.removeFromWishList(article.title, article._id)} />
+                    <Icon type="delete" key="ellipsis" onClick = {() => props.removeFromWishList(article.title, article.idArticle)} />
                 ]}
                 >                       
                 <Meta
@@ -90,11 +90,12 @@ const mapDispatchToProps = function(dispatch){
       console.log("click", title, description, content)
       dispatch({type : 'addArticle', title : title, description : description, content : content, image : image})
     }, 
-    removeFromWishList : function(title, _id){
+    removeFromWishList : async function(title, idArticle){
+      console.log('REMOVE ENVOYÉ')
       const envoiBackend = await fetch('/delete-article',{
         method : 'POST',
         headers : {'Content-Type': 'application/x-www-form-urlencoded'},
-        body : `id=${_id}`
+        body : `id=${idArticle}`
       })
       console.log("click remove", title)
       dispatch({type : "removeArticle", title: title})

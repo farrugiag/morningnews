@@ -90,7 +90,7 @@ const mapDispatchToProps = function(dispatch){
       const reponseBackend = await envoiBackend.json()
       const idBackendArticle = reponseBackend.articleSaved._id
       console.log("click", title, description, content, idBackendArticle)
-      dispatch({type : 'addArticle', title : title, description : description, content : content, image : image, _id : idBackendArticle})
+      dispatch({type : 'addArticle', title : title, description : description, content : content, image : image, idArticle : idBackendArticle})
     }
   }
 }
