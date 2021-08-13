@@ -72,4 +72,10 @@ router.post('/add-article', async function(req, res, next) {
   res.json({result : true, articleSaved})
 })
 
+router.post('/delete-article', async function (req, res, next) {
+  const id= req.body.id
+  const articleDelete= await ArticleModel.deleteOne({_id: id})
+  res.json({result: true})
+})
+
 module.exports = router;
