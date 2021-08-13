@@ -11,11 +11,14 @@ function ScreenSource(props) {
   const [sourceList, setSourceList] = useState([])
 
   useEffect(()=>{
-    console.log("ScreenSource is loaded")
+    console.log("ScreenSource is loaded hahahahahha")
     console.log("props", props)
     async function loadData() {
-      var rawResponse = await fetch(props.urlSource)
+      console.log("fonction lancée")
+      props.languageAtFirst(props.token)
+      var rawResponse = await fetch(`https://newsapi.org/v2/sources?/${props.countryAPI}&apiKey=8779b06fef76451fb6499e5005138d69`)
       var response = await rawResponse.json()
+      console.log ("response", response)
       setSourceList(response.sources)
     } 
     loadData()
@@ -47,8 +50,8 @@ function ScreenSource(props) {
        <div className="Banner">
 
           <div className='divDrapeaux'>
-            <Avatar src = "/images/ru.png"  className = 'UK' onClick = {()=> props.changeLanguageEnglish()}/>
-            <Avatar src = "/images/logo192.png" className='FR' onClick = {()=> props.changeLanguageFrench()}/>
+            <Avatar src = "/images/ru.png"  className = 'UK' onClick = {()=> props.changeLanguageEnglish(props.token)}/>
+            <Avatar src = "/images/logo192.png" className='FR' onClick = {()=> props.changeLanguageFrench(props.token)}/>
           </div>  
 
         </div>
@@ -79,11 +82,39 @@ function ScreenSource(props) {
 const mapDispatchToProps = function(dispatch){
   console.log("dispatch",dispatch)
   return {
-    changeLanguageEnglish : function(){
-      dispatch({type : "changeEnglish"})
+    changeLanguageEnglish : async function(token){
+      const language = 'eng&country=gb'
+      const languageBackend= await fetch('/language',{
+        method : 'POST',
+        headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+        body : `language=${language}&token=${token}`
+      })
+      const responseLanguage = await languageBackend.json()
+
+      dispatch({type : "changeEnglish", language: responseLanguage.language})
     }, 
-    changeLanguageFrench : function(){
-      dispatch({type : "changeFrench"})
+    changeLanguageFrench : async function(token){
+      const language = 'fr&country=fr'
+      const languageBackend= await fetch('/language',{
+        method : 'POST',
+        headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+        body : `language=${language}&token=${token}`
+      })
+      const responseLanguage = await languageBackend.json()
+
+      dispatch({type : "changeFrench", language: responseLanguage.language})
+      }, 
+      languageAtFirst : async function (token){
+        console.log("language first", token)
+        const languageBackendFirst = await fetch('/language-first', {
+          method : 'POST',
+          headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+          body : `token=${token}`
+        })
+        const responseLanguage = await languageBackendFirst.json()
+
+        dispatch({type : "languageFirst", language: responseLanguage.language})
+
       }
     }
   }

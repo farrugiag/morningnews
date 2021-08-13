@@ -1,9 +1,13 @@
 export default function(countryAPI = 'language=fr&country=fr', action){
+    console.log('action', action)
     if(action.type === "changeEnglish"){
-        return 'language=eng&country=gb'
+        return action.language
     }
     if(action.type === "changeFrench"){
-        return 'language=fr&country=fr'
+        return action.language
+    }
+    if (action.type =="languageFirst"){
+        return action.language
     }
     return countryAPI
 }

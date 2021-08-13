@@ -28,7 +28,8 @@ router.post('/sign-up', async function(req, res, next){
     email : email,
     password : hash,
     userArticles : [],
-    token : uid2(32)
+    token : uid2(32),
+    language : 'language=fr&country=fr'
   })
   const newUserSaved = await newUser.save()
   res.json({result : !!newUserFind , user : {username : newUserSaved.username, token : newUserSaved.token}})
@@ -98,6 +99,22 @@ router.post('/delete-article', async function (req, res, next) {
   const idArticle = req.body.id
   const articleDelete= await ArticleModel.deleteOne({ _id : idArticle })
   res.json({result: true})
+})
+
+router.post('/language', async function (req, res, next) {
+  console.log("req.body language", req.body.language)
+  const language = `language=${req.body.language}&country=${req.body.country}`
+  const token = req.body.token 
+  const languageUpdate = await UserModel.updateOne({token: token}, {language:language})
+  const user = await UserModel.findOne({token: token})
+  res.json ({language : user.language})
+})
+
+router.post('/language-first', async function (req, res, next){
+  const token= req.body.token
+  const user = await UserModel.findOne({token: token})
+  console.log("user first", user)
+  res.json ({language: user.language})
 })
 
 module.exports = router;
